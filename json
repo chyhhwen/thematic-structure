@@ -1,0 +1,20 @@
+{
+    "id":123456,
+    "data":[
+        {
+            "name":"led",
+            "state":"on"
+        },
+        {
+            "name":"led",
+            "state":"on",
+            "temp":15,
+            "humi":12
+        },
+        {
+            "name":"firme",
+            "state":"on",
+            "heat":15
+        }
+    ]
+}

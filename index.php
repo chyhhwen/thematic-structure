@@ -1,3 +1,13 @@
+<?php
+    require_once "./lib/wp.php";
+    $wp = new clist();
+    $wp -> config("root","","mqtt","block");
+    $wp -> put_data(["id","ip","time"]);
+    if($wp -> check($wp -> client_ip()))
+    {
+        http_response_code(404);
+    }
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -24,33 +34,47 @@
     </div>
 </nav>
 <div class="container p-5">
-    <div class="row align-items-center mt-5">
-        <div class="col fs-1">
-            <ul>
-                <li>LED</li>
-                <li>狀態：</li>
-            </ul>
-        </div>
-        <div class="col fs-1">
-            <ul>
-                <li>DHT11</li>
-                <li>狀態：</li>
-                <li>溫度：</li>
-                <li>濕度：</li>
-            </ul>
-        </div>
-        <div class="col fs-1">
-            <ul>
-                <li>FIRME</li>
-                <li>狀態：</li>
-                <li>熱度：</li>
-            </ul>
-        </div>
-    </div>
+<div class="row align-items-center mt-5">
+<?php
+    require_once "./lib/db.php";
+    $db = new db();
+    $db -> config("root","","mqtt","list");
+    $db -> put_data(['id','dispatch','target','data','time']);
+    $temp = $db -> sel();
+    $data = json_decode($temp[0]['data'],true);
+    for($i = 0;$i < 3;$i++)
+    {
+        echo'<div class="col fs-1"><ul>';
+        switch ($i)
+        {
+            case 0:
+                echo '<li>LED</li>';
+                echo '<li>狀態：'. $data['data'][$i]['state'] .'</li>';
+                break;
+            case 1:
+                echo '<li>DHT11</li>';
+                echo '<li>狀態：'. $data['data'][$i]['state'] .'</li>';
+                echo '<li>溫度：'. $data['data'][$i]['temp'] .'</li>';
+                echo '<li>濕度：'. $data['data'][$i]['humi'] .'</li>';
+                break;
+            case 2:
+                echo '<li>FIRME</li>';
+                echo '<li>狀態：'. $data['data'][$i]['state'] .'</li>';
+                echo '<li>熱度：'. $data['data'][$i]['heat'] .'</li>';
+                break;
+        }
+        echo'</ul></div>';
+    }
+?>
+</div>
 </div>
 <div class="row align-items-center mt-5">
     <div class="col fs-1">
-        <p class="text-center">時間:123</p>
+        <?php
+            date_default_timezone_set("Etc/GMT-8");
+            date_default_timezone_set('Asia/Taipei');
+            echo'<p class="text-center">時間:'. date('Y-m-d-H-i-s') .'</p>';
+        ?>
     </div>
 </div>
 </body>
